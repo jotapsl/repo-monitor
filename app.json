@@ -1,6 +1,6 @@
 {
-  "name": "repomonitor",
-  "description": "Repomonitor Heroku app.",
+  "name": "repo-monitor",
+  "description": "Github Repository Monitor - Heroku app.",
   "scripts": {
     "postdeploy": "python manage.py migrate"
   },
