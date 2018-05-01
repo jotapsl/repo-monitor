@@ -15,6 +15,9 @@ DATABASES['default']['ATOMIC_REQUESTS'] = True
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv())
 
+GITHUB_CLIENT_ID = config('GITHUB_CLIENT_ID')
+GITHUB_SECRET_ID = config('GITHUB_SECRET_ID')
+
 STATIC_ROOT = base_dir_join('staticfiles')
 STATIC_URL = '/static/'
 

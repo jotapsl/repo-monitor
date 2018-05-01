@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { Components } from "../..";
 
+// TODO: responsivity
+
 class AppPage extends Component {
     constructor(props) {
         super(props);

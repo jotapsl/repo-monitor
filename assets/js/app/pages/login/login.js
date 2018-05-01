@@ -1,8 +1,27 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
+import { AuthConfig } from '../../../constants';
 
 class LoginPage extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            githubHref: '#'
+        };
+    }
+
+    componentDidMount() {
+        let { CLIENT_ID, SCOPE, CALLBACK_URL } = AuthConfig;
+
+        this.setState({
+            githubHref: `https://github.com/login/oauth/authorize?client_id=${CLIENT_ID}&scope=${SCOPE}&redirect_uri=${CALLBACK_URL}`
+        });
+    }
+
     render() {
+        let { githubHref } = this.state;
+
         return (
             <div className="login-container row">
                 <div className="col-12 col-lg-8">
@@ -24,10 +43,10 @@ class LoginPage extends Component {
                 </div>
                 <div className="col-12 col-lg-4">
                     <div className="card p-3">
-                        <Link to="/app/" className="btn btn-success btn-block" aria-label="Login">
+                        <a href={githubHref} className="btn btn-success btn-block" aria-label="Login">
                             <i className="fab fa-github fa-lg" />
                             <span> Login using GitHub </span>
-                        </Link>
+                        </a>
                     </div>
                 </div>
             </div>
