@@ -23,7 +23,6 @@ class ColorChanger extends React.Component {
 
     render() {
         const { title } = this.props;
-        console.log(window.Urls);
 
         return (
             <div className="main-container">

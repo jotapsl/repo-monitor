@@ -73,7 +73,7 @@ styles:
   close: false
   custom-forms: false
   dropdown: false
-  input-group: false
+  input-group: true
   jumbotron: true
   list-group: false
   media: false

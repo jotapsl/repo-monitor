@@ -1,2 +1,2 @@
 // import pages
-import 'pages/homePage';
+import 'app-root';
