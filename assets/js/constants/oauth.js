@@ -10,6 +10,6 @@ if (process.env.NODE_ENV === 'production') {
     clientId = '1dd8f2d6386da42490b5';
 }
 
-export const SCOPE = 'user repo';
+export const SCOPE = '';
 export const CLIENT_ID = clientId;
 export const CALLBACK_URL = callbackUrl;
