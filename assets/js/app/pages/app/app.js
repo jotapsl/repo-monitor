@@ -1,5 +1,7 @@
 import React, { Component } from "react";
 import { Components } from "../..";
+import { connect } from "react-redux";
+import { Redirect } from "react-router-dom";
 
 // TODO: responsivity
 
@@ -45,6 +47,10 @@ class AppPage extends Component {
 
     render() {
         const { list } = this.state;
+        const { isLogged } = this.props;
+
+        if (!isLogged)
+            return (<Redirect to="/landing" />);
 
         return (
             <div>
@@ -70,4 +76,10 @@ class AppPage extends Component {
     }
 }
 
-export default AppPage;
+const mapStateToProps = state => {
+    return {
+        isLogged: state.auth.accessToken != null
+    };
+};
+
+export default connect(mapStateToProps)(AppPage);

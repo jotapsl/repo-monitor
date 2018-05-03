@@ -1,9 +1,9 @@
 import AppPage from './app/app';
-import LoginPage from './login/login';
+import LandingPage from './landing/landing';
 import LoginCallbackPage from './logincallback/logincallback';
 
 export default {
     AppPage,
-    LoginPage,
+    LandingPage,
     LoginCallbackPage
 };
