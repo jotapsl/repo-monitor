@@ -9,8 +9,6 @@ import store from './store';
 
 // TODO: use <Redirect> at route '/'
 
-console.log(process.env);
-
 ReactDOM.render(
     <Provider store={store}>
         <BrowserRouter>

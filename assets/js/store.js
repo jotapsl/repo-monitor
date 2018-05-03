@@ -5,8 +5,14 @@ import rootReducer from './reducers';
 
 import { loadAuthState, saveAuthState } from './localStorage';
 
+const middlewares = [thunk];
+
+if (process.env.NODE_ENV !== 'production') {   
+    middlewares.push(createLogger());
+}
+
+const middleware = applyMiddleware(...middlewares);
 const persistedState = { auth: loadAuthState() };
-const middleware = applyMiddleware(thunk, createLogger());
 
 const store = createStore(rootReducer, persistedState, middleware);
 
