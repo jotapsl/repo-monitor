@@ -20,7 +20,7 @@ ReactDOM.render(
                             <Route path="/landing/" component={LandingPage} />
                             <Route path="/app/" component={AppPage} />
                             <Route path="/logincallback/" component={LoginCallbackPage} />
-                            <Route render={() => (<Redirect to="/landing"/>)}/>
+                            <Redirect to="/landing"/>
                         </Switch>
                     </div>
                 </div>

@@ -5,14 +5,16 @@ import { Redirect } from 'react-router-dom';
 
 class LoginCallbackPage extends Component {
     componentDidMount() {
-        const { login, isLogged } = this.props;
-
+        const { login, isLogged, location} = this.props;
+        
         if (isLogged)
             return;
 
+        // TODO helper function getUrlParam
+
         const code =
-            window.location.href.match(/\?code=(.*)/) &&
-            window.location.href.match(/\?code=(.*)/)[1];
+            location.search.match(/\?code=(.*)/) &&
+            location.search.match(/\?code=(.*)/)[1];
 
         login(code);
     }

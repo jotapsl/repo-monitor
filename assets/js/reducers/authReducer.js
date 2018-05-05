@@ -10,29 +10,21 @@ export default (
     },
     action
 ) => {
-    let newState = state;
-
     switch (action.type) {
         case "LOGIN_START":
-            newState = Object.assign({}, state, {loggingIn: true, error: false});
-            break;
+            return Object.assign({}, state, {loggingIn: true, error: false});
         case "LOGIN_SUCCESSFUL":
-            newState = Object.assign({}, state, {hasSession: true, username: action.payload.username, loggingIn: false})
-            break;
+            return Object.assign({}, state, {hasSession: true, username: action.payload.username, loggingIn: false})
         case "LOGIN_FAILED":
-            newState = Object.assign({}, state, {hasSession: false, username: null, loggingIn: false, error: true})
-            break;
+            return Object.assign({}, state, {hasSession: false, username: null, loggingIn: false, error: true})
         case "LOGOUT":
-            newState = Object.assign({}, state, {hasSession: false, username: null})
-            break;
+            return Object.assign({}, state, {hasSession: false, username: null})
 
         case "FETCHING_SESSION_SUCCESS":
-            newState = Object.assign({}, state, {hasSession: true, username: action.payload.username, fetchingSession: false});
-            break;
+            return Object.assign({}, state, {hasSession: true, username: action.payload.username, fetchingSession: false});
         case "FETCHING_SESSION_FAILED":
-            newState = Object.assign({}, state, {fetchingSession: false});
-            break;
-    }
-
-    return newState;
+            return Object.assign({}, state, {fetchingSession: false});
+        }
+        
+    return state;
 };
