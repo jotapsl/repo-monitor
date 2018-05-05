@@ -1,12 +1,12 @@
 import React, { Component } from "react";
-import { Components } from "../..";
+import { CommitListItem } from "../../components";
 
 class CommitList extends Component {
     render() {
         const { list } = this.props;
 
         const items = list.map((item, i) => (
-            <Components.CommitListItem
+            <CommitListItem
                 key={item.id}
                 item={item}
                 isLast={i !== list.length - 1}

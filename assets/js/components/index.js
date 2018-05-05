@@ -1,11 +1,11 @@
 import NavBar from './NavBar';
 import CommitList from './CommitList';
 import CommitListItem from './CommitListItem';
-import Auth from './Auth';
+import Startup from './Startup';
 
-export default {
+export {
     CommitList,
     CommitListItem,
     NavBar,
-    Auth
+    Startup
 };

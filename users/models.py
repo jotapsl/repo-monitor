@@ -8,7 +8,9 @@ from .managers import UserManager
 
 
 class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
-    email = models.EmailField(max_length=255, unique=True)
+    github_id = models.IntegerField(unique=True)
+    username = models.TextField(max_length=255)
+    
     is_staff = models.BooleanField(
         default=False,
         help_text=_('Designates whether the user can log into this admin '
@@ -20,13 +22,13 @@ class User(AbstractBaseUser, PermissionsMixin, IndexedTimeStampedModel):
 
     objects = UserManager()
 
-    USERNAME_FIELD = 'email'
+    USERNAME_FIELD = 'github_id'
 
     def get_full_name(self):
-        return self.email
+        return self.username
 
     def get_short_name(self):
-        return self.email
+        return self.username
 
     def __str__(self):
-        return self.email
+        return self.username

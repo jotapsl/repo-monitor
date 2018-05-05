@@ -1,50 +1,81 @@
 import axios from 'axios';
 
-export const getAccessToken = (code) => {
+export const getSessionInfo = () => {
+    return (dispatch) => {
+        const hasSession = document.cookie.split(';').map(s => s.trim().split('=')[0]).includes('hassession');
+        
+        if (hasSession) {
+            axios.get(Urls.get_session()).then(
+                res => dispatch(fetchingSessionSuccessAction(res.data['username'])),
+                err => dispatch(fetchingSessionFailedAction())
+            );
+        } else {
+            dispatch(fetchingSessionFailedAction());
+        }
+    }
+}
+
+export const loginAction = (code) => {
     if (!code)
         throw new Error("No code to fetch token!");
 
     return (dispatch) => {
-        dispatch(fetchingAccessToken());
+        dispatch(loginStartAction());
 
-        axios.get(Urls.get_github_access_token(), {
+        axios.get(Urls.login(), {
             params: {
-                code: code
+                code
             }
         }).then(
             (res) => {
-                if (res.data['error'])
-                    dispatch(errorAccessToken());
-                else 
-                    dispatch(setAccessToken(res.data['access_token']));
+                dispatch(loginSuccessfulAction(res.data['username']));
             },
+            (err) => {
+                dispatch(loginFailedAction());
+            }
         );
-    }
+    };
 }
 
-const fetchingAccessToken = () => {
-    return {
-        type: "FETCHING_ACCESS_TOKEN"
+export const logoutAction = () => {
+    return (dispatch) => {
+        axios.get(Urls.logout()).then(
+            res => dispatch({type: 'LOGOUT'})
+        );
     }
 };
 
-const setAccessToken = (token) => {
+const loginStartAction = () => {
     return {
-        type: "SET_ACCESS_TOKEN",
+        type: "LOGIN_START"
+    };
+};
+
+const loginSuccessfulAction = (username) => {    
+    return {
+        type: "LOGIN_SUCCESSFUL",
         payload: {
-            token: token
+            username
         }
-    }
+    };
 };
 
-const errorAccessToken = (token) => {
+const loginFailedAction = (token) => {
     return {
-        type: "ERROR_ACCESS_TOKEN"
-    }
+        type: "LOGIN_FAILED"
+    };
 };
 
-export const clearAccessToken = () => {
+const fetchingSessionSuccessAction = (username) => {
     return {
-        type: "CLEAR_ACCESS_TOKEN"
-    }
+        type: "FETCHING_SESSION_SUCCESS",
+        payload: {
+            username
+        }
+    };
+}
+const fetchingSessionFailedAction = () => {
+    return {
+        type: "FETCHING_SESSION_FAILED"
+    };
 }

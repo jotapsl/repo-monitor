@@ -1,8 +1,11 @@
+import { ENETUNREACH } from "constants";
+
 export default (
     state = {
-        accessToken: null,
-        userName: null,
-        fetching: false,
+        hasSession: false,
+        fetchingSession: true,
+        username: null,
+        loggingIn: false,
         error: false
     },
     action
@@ -10,17 +13,24 @@ export default (
     let newState = state;
 
     switch (action.type) {
-        case "FETCHING_ACCESS_TOKEN":
-            newState = Object.assign({}, state, {fetching: true, error: false});
+        case "LOGIN_START":
+            newState = Object.assign({}, state, {loggingIn: true, error: false});
             break;
-        case "SET_ACCESS_TOKEN":
-            newState = Object.assign({}, state, {accessToken: action.payload.token, userName: 'John Doe', fetching: false})
+        case "LOGIN_SUCCESSFUL":
+            newState = Object.assign({}, state, {hasSession: true, username: action.payload.username, loggingIn: false})
             break;
-        case "ERROR_ACCESS_TOKEN":
-            newState = Object.assign({}, state, {accessToken: null, userName: null, fetching: false, error: true})
+        case "LOGIN_FAILED":
+            newState = Object.assign({}, state, {hasSession: false, username: null, loggingIn: false, error: true})
             break;
-        case "CLEAR_ACCESS_TOKEN":
-            newState = Object.assign({}, state, {accessToken: null, userName: null})
+        case "LOGOUT":
+            newState = Object.assign({}, state, {hasSession: false, username: null})
+            break;
+
+        case "FETCHING_SESSION_SUCCESS":
+            newState = Object.assign({}, state, {hasSession: true, username: action.payload.username, fetchingSession: false});
+            break;
+        case "FETCHING_SESSION_FAILED":
+            newState = Object.assign({}, state, {fetchingSession: false});
             break;
     }
 

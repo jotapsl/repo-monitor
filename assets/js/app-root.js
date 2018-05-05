@@ -1,31 +1,30 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Components, Pages } from './app';
-import { BrowserRouter, Route, Switch } from 'react-router-dom';
-import { AuthConfig } from './constants';
 import { Provider } from 'react-redux';
-import { Redirect } from 'react-router-dom';
+import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
+import { NavBar, Startup } from './components';
+import { LandingPage, AppPage, LoginCallbackPage } from './pages'
 import store from './store';
 
-// TODO: use <Redirect> at route '/'
 
 ReactDOM.render(
     <Provider store={store}>
-        <BrowserRouter>
-            <div>
-                <Components.Auth />
-                <Components.NavBar />
+        <Startup>
+            <BrowserRouter>
+                <div>
+                    <NavBar />
 
-                <div className="container p-3">
+                    <div className="container p-3">
 
-                    <Switch>
-                        <Route path="/landing/" component={Pages.LandingPage} />
-                        <Route path="/app/" component={Pages.AppPage} />
-                        <Route path="/logincallback/" component={Pages.LoginCallbackPage} />
-                        <Route render={() => (<Redirect to="/landing"/>)}/>
-                    </Switch>
+                        <Switch>
+                            <Route path="/landing/" component={LandingPage} />
+                            <Route path="/app/" component={AppPage} />
+                            <Route path="/logincallback/" component={LoginCallbackPage} />
+                            <Route render={() => (<Redirect to="/landing"/>)}/>
+                        </Switch>
+                    </div>
                 </div>
-            </div>
-        </BrowserRouter>
+            </BrowserRouter>
+        </Startup>
     </Provider>
 , document.getElementById('react-app'));

@@ -30,7 +30,7 @@ class LandingPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLogged: state.auth.accessToken != null
+        isLogged: state.auth.hasSession
     };
 }
 

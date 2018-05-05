@@ -24,6 +24,8 @@ ADMINS = (
 
 AUTH_USER_MODEL = 'users.User'
 
+AUTHENTICATION_BACKENDS = ['users.auth_backend.AuthBackend']
+
 ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
@@ -60,7 +62,7 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
         'DIRS': [base_dir_join('templates')],
-        'APP_DIRS': True,
+        'APP_DIRS': True, 
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',

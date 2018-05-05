@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { getAccessToken } from '../../../actions/authActions';
+import { loginAction } from '../../actions/authActions';
 import { Redirect } from 'react-router-dom';
 
 class LoginCallbackPage extends Component {
     componentDidMount() {
-        const { dispatch, isLogged } = this.props;
+        const { login, isLogged } = this.props;
 
         if (isLogged)
             return;
@@ -14,7 +14,7 @@ class LoginCallbackPage extends Component {
             window.location.href.match(/\?code=(.*)/) &&
             window.location.href.match(/\?code=(.*)/)[1];
 
-        dispatch(getAccessToken(code));
+        login(code);
     }
 
     render() {
@@ -36,9 +36,15 @@ class LoginCallbackPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLogged: state.auth.accessToken != null,
+        isLogged: state.auth.hasSession,
         authError: state.auth.error
     };
 }
 
-export default connect(mapStateToProps)(LoginCallbackPage);
+const mapDispatchToProps = dispatch => {
+    return {
+        login: (code) => dispatch(loginAction(code))
+    }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LoginCallbackPage);

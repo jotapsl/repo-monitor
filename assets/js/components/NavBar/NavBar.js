@@ -1,8 +1,8 @@
 import React, { Component } from "react";
 import { Link, withRouter } from 'react-router-dom';
-import { AuthConfig } from '../../../constants';
+import { AuthConfig } from '../../constants';
 import { connect } from 'react-redux';
-import { clearAccessToken } from '../../../actions/authActions';
+import { logoutAction } from '../../actions/authActions';
 
 class NavBar extends Component {
     constructor(props) {
@@ -24,15 +24,15 @@ class NavBar extends Component {
     }
 
     logout() {
-        const { history, dispatch } = this.props;
+        const { history, logout } = this.props;
 
-        dispatch(clearAccessToken());
+        logout();
         history.push('/landing');
     }
         
     render() {
         const { githubHref } = this.state;
-        const { isLogged, userName, fetching } = this.props;
+        const { isLogged, username, loggingIn } = this.props;
 
         const loginButton = (
             <div><a href={githubHref} className="btn btn-success btn-block" aria-label="Login">
@@ -43,14 +43,14 @@ class NavBar extends Component {
 
         const usernameLogoutButton = (
             <div>
-                <span className="mx-2 text-white">{userName}</span>
+                <span className="mx-2 text-white">{username}</span>
                 <button onClick={this.logout} type="button" title="Log out" className="btn btn-outline-light">
                     <i className="fas fa-sign-out-alt" />
                 </button>
             </div>
         );
 
-        const menu = fetching ? (null) : (isLogged ? usernameLogoutButton : loginButton);
+        const menu = loggingIn ? (null) : (isLogged ? usernameLogoutButton : loginButton);
 
         return (
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -66,10 +66,16 @@ class NavBar extends Component {
 
 const mapStateToProps = (state) => {
     return {
-        isLogged: state.auth.accessToken != null,
-        userName: state.auth.userName,
-        fetching: state.auth.fetching
+        isLogged: state.auth.hasSession,
+        username: state.auth.username,
+        loggingIn: state.auth.loggingIn
     }
 };
 
-export default withRouter(connect(mapStateToProps)(NavBar));
+const mapDispatchToProps = (dispatch) => {
+    return {
+        logout: () => dispatch(logoutAction())
+    }
+}
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(NavBar));

@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Components } from "../..";
+import { CommitList } from "../../components";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
 
@@ -69,7 +69,7 @@ class AppPage extends Component {
                 </div>
                 <hr />
                 <div className="p-3">
-                    <Components.CommitList list={list} />
+                    <CommitList list={list} />
                 </div>
             </div>
         );
@@ -78,7 +78,7 @@ class AppPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLogged: state.auth.accessToken != null
+        isLogged: state.auth.hasSession
     };
 };
 
