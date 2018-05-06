@@ -1,7 +1,8 @@
 from django.conf import settings
 from django.conf.urls import include, url  # noqa
 from django.contrib import admin
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, RedirectView
+from django.views.decorators.csrf import ensure_csrf_cookie
 
 import django_js_reverse.views
 
@@ -17,10 +18,10 @@ urlpatterns = [
     url(r'^api/repository/add$', RepoView.as_view(), name='add_repository'),
     url(r'^api/commits/list$', CommitView.as_view(), name='list_commits'),
 
-    url(r'^logincallback/$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='logincallback'),
-    url(r'^landing/$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='landing'),
-    url(r'^app/$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='app'),
-    url(r'^$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='landing'),
+    url(r'^logincallback/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
+    url(r'^landing/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
+    url(r'^app/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
+    url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
 ]
 
 if settings.DEBUG:

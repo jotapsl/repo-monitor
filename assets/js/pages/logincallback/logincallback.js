@@ -7,6 +7,8 @@ class LoginCallbackPage extends Component {
     componentDidMount() {
         const { login, isLogged, location} = this.props;
         
+        console.log(isLogged);
+
         if (isLogged)
             return;
 
