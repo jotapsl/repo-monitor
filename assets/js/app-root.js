@@ -5,7 +5,9 @@ import { BrowserRouter, Redirect, Route, Switch } from "react-router-dom";
 import { NavBar, Startup } from "./components";
 import { LandingPage, AppPage, LoginCallbackPage } from "./pages";
 import store from "./store";
-import { axiosConfig } from "./constants/axios-config";
+import { configAxios } from "./constants/axios-config";
+
+configAxios();
 
 ReactDOM.render(
     <Provider store={store}>
