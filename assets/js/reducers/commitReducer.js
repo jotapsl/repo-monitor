@@ -5,7 +5,9 @@ export default (
         repoAddLoading: false,
 
         commitsLoading: false,
-        commitList: null
+        commitList: [],
+
+        repoFilter: null
     },
     action
 ) => {
@@ -21,10 +23,15 @@ export default (
             return Object.assign({}, state, {alertMessage: null, alertType: null});
 
         case "FETCH_COMMITS_START":
-            return Object.assign({}, state, {commitsLoading: true});
+            return Object.assign({}, state, {commitsLoading: true, commitList: []});
         case "FETCH_COMMITS_FINISH":
             return Object.assign({}, state, {commitsLoading: false, commitList: action.payload.list});
-        }
+            
+        case "SET_REPO_FILTER":
+            return Object.assign({}, state, {repoFilter: action.payload.reponame});
+        case "CLEAR_REPO_FILTER":
+            return Object.assign({}, state, {repoFilter: null});
+    }
 
     return state;
 };

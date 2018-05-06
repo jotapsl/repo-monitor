@@ -7,7 +7,9 @@ import {
     setAlertAction,
     clearAlertAction,
     repoAddAction,
-    fetchCommitsAction
+    fetchCommitsAction,
+    setRepoFilterAction,
+    clearRepoFilterAction
 } from "../../actions/commitActions";
 
 class AppPage extends Component {
@@ -32,20 +34,33 @@ class AppPage extends Component {
         clearAlert();
     }
 
+    handleRepoSelect(reponame) {
+        const { setRepoFilter } = this.props;
+        setRepoFilter(reponame);
+    }
+
+    handleRepoClear() {
+        const { clearRepoFilter } = this.props;
+        clearRepoFilter();
+    }
+
     render() {
-        const { isLogged, repoAddLoading, alertMessage, alertType, list, commitsLoading } = this.props;
+        const { isLogged, repoAddLoading, alertMessage, alertType, list, commitsLoading, repoFilter } = this.props;
 
         if (!isLogged) return <Redirect to="/landing/" />;
 
-        const listComponent = commitsLoading ? (
+        const loadingIcon = commitsLoading ? (
             <div className="m-3 text-center">
                 <i className="fas fa-3x fa-sync fa-spin"></i>
             </div>
-        ) : (
-            <div className="mt-3">
-                <CommitList list={list} />
-            </div>
-        );
+        ) : (null);
+
+        const header = repoFilter ? (
+            <h4>Filtering by {repoFilter}
+                <div className="btn btn-dark ml-2 py-0 px-1 cursor-pointer" title="Clear filter" onClick={() => this.handleRepoClear()}>
+                    <i className="fas fa-fw fa-sm fa-times"></i>
+                </div>
+            </h4>) : (<h4>All repositories</h4>)
 
         return (
             <div>
@@ -58,7 +73,7 @@ class AppPage extends Component {
                 </div>
                 <div className="row">
                     <div className="col-12 col-md-6">
-                        <h4>All repositories</h4>
+                        {header}
                     </div>
 
                     <div className="col-12 col-md-6 offset-lg-2 col-lg-4">
@@ -69,7 +84,10 @@ class AppPage extends Component {
                             />
                     </div>
                 </div>
-                {listComponent}
+                <div className="mt-3">
+                    <CommitList list={list} onRepoSelect={(reponame) => this.handleRepoSelect(reponame)}/>
+                </div>
+                {loadingIcon}
             </div>
         );
     }
@@ -84,7 +102,9 @@ const mapStateToProps = state => {
         repoAddLoading: state.commit.repoAddLoading,
 
         list: state.commit.commitList,
-        commitsLoading: state.commit.commitsLoading
+        commitsLoading: state.commit.commitsLoading,
+
+        repoFilter: state.commit.repoFilter
     };
 };
 
@@ -94,7 +114,10 @@ const mapDispatchToProps = dispatch => {
         fetchCommits: () => dispatch(fetchCommitsAction()),
 
         setAlertError: error => dispatch(setAlertAction(error, 'ERROR')),
-        clearAlert: error => dispatch(clearAlertAction())
+        clearAlert: error => dispatch(clearAlertAction()),
+
+        setRepoFilter: reponame => dispatch(setRepoFilterAction(reponame)),
+        clearRepoFilter: reponame => dispatch(clearRepoFilterAction(reponame))
     };
 };
 

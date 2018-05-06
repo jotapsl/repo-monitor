@@ -2,18 +2,19 @@ import React, { Component } from "react";
 import { CommitListItem } from "../../components";
 
 class CommitList extends Component {
+    onRepoSelect(reponame) {
+        const { onRepoSelect } = this.props;
+        onRepoSelect(reponame);
+    }
+
     render() {
         const { list } = this.props;
-
-        if (!list || list.length === 0)
-            return (
-                <div>No commits found! Add a repository or clear filter.</div>
-            );
 
         const items = list.map((item, i) => (
             <CommitListItem
                 key={item.id}
                 item={item}
+                onRepoSelect={(reponame) => this.onRepoSelect(reponame)}
             />
         ));
 

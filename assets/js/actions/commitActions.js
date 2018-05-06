@@ -20,11 +20,15 @@ export const repoAddAction = (reponame) => {
     }
 }
 
-export const fetchCommitsAction = () => {
+export const fetchCommitsAction = (reponame) => {
     return dispatch => {
         dispatch(fetchCommitsStart());
+        let params = {};
+        
+        if (reponame)
+            params = {reponame};
 
-        axios.get(Urls.list_commits()).then(
+        axios.get(Urls.list_commits(), {params}).then(
             (res) => {
                 const list = res.data.map(item => {
                     return {
@@ -39,6 +43,20 @@ export const fetchCommitsAction = () => {
             }
         );
     }
+}
+
+export const setRepoFilterAction = (reponame) => {
+    return dispatch => {
+        dispatch(setRepoFilter(reponame));
+        dispatch(fetchCommitsAction(reponame));
+    };
+}
+
+export const clearRepoFilterAction = (reponame) => {
+    return dispatch => {
+        dispatch(clearRepoFilter());
+        dispatch(fetchCommitsAction(null));
+    };
 }
 
 const fetchCommitsStart = () => {
@@ -63,6 +81,19 @@ const repoAddStart = () => {
 const repoAddFinish = () => {
     return {
         type: 'REPO_ADD_FINISH'
+    };
+}
+
+const setRepoFilter = (reponame) => {
+    return {
+        type: 'SET_REPO_FILTER',
+        payload: { reponame }
+    };
+}
+
+const clearRepoFilter = () => {
+    return {
+        type: 'CLEAR_REPO_FILTER'
     };
 }
 

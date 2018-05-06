@@ -69,7 +69,14 @@ class CommitView(View):
         if not request.user.is_authenticated:
             return HttpResponse(status=401)
 
-        commits = Commit.objects.order_by('-timestamp').values(
+        reponame = request.GET.get('reponame')
+
+        if reponame:
+            query = Commit.objects.filter(repo__full_name=reponame).order_by('-timestamp')
+        else:
+            query = Commit.objects.order_by('-timestamp')    
+
+        commits = query.values(
             'id',
             'message',
             'author',
