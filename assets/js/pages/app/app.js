@@ -1,76 +1,75 @@
 import React, { Component } from "react";
-import { CommitList } from "../../components";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
+import { RepoAdd, CommitList, Alert } from "../../components";
 
-// TODO: responsivity
+import {
+    setAlertAction,
+    clearAlertAction,
+    repoAddAction,
+    fetchCommitsAction
+} from "../../actions/commitActions";
 
 class AppPage extends Component {
-    constructor(props) {
-        super(props);
 
-        this.state = {
-            list: [
-                {
-                    id: 1,
-                    message: "Commit 1",
-                    repo: "repouser/repository",
-                    author: "commit author"
-                },
-                {
-                    id: 2,
-                    message: "Commit 2",
-                    repo: "repouser/repository",
-                    author: "commit author"
-                },
-                {
-                    id: 3,
-                    message: "Commit 3",
-                    repo: "repouser/repository",
-                    author: "commit author"
-                },
-                {
-                    id: 4,
-                    message: "Commit 4",
-                    repo: "repouser/repository",
-                    author: "commit author"
-                },
-                {
-                    id: 5,
-                    message: "Commit 5",
-                    repo: "repouser/repository",
-                    author: "commit author"
-                }
-            ]
-        };
+    componentDidMount() {
+        const { fetchCommits } = this.props;
+        fetchCommits();
+    }
+
+    handleRepoAdd(reponame) {
+        const { repoAddStart } = this.props;
+        repoAddStart(reponame);
+    }
+
+    handleRepoAddError(error) {
+        const { setAlertError } = this.props;
+        setAlertError(error);
+    }
+
+    handleAlertDismiss() {
+        const { clearAlert } = this.props;
+        clearAlert();
     }
 
     render() {
-        const { list } = this.state;
-        const { isLogged } = this.props;
+        const { isLogged, repoAddLoading, alertMessage, alertType, list, commitsLoading } = this.props;
 
-        if (!isLogged)
-            return (<Redirect to="/landing" />);
+        if (!isLogged) return <Redirect to="/landing/" />;
+
+        const listComponent = commitsLoading ? (
+            <div className="m-3 text-center">
+                <i className="fas fa-3x fa-sync fa-spin"></i>
+            </div>
+        ) : (
+            <div className="mt-3">
+                <CommitList list={list} />
+            </div>
+        );
 
         return (
             <div>
-                <div className="d-flex justify-content-between">
-                    <h4>All repositories</h4>
+                <div>
+                    <Alert
+                        msg={alertMessage}
+                        type={alertType}
+                        onDismiss={() => this.handleAlertDismiss()}
+                    />
+                </div>
+                <div className="row">
+                    <div className="col-12 col-md-6">
+                        <h4>All repositories</h4>
+                    </div>
 
-                    <div className="input-group input-group-sm w-auto">
-                        <input className="form-control" placeholder="user/repo" />
-                        <div className="input-group-append">
-                            <button className="btn btn-success">
-                                <i className="fas fa-plus" />
-                                <span> Add repository</span>
-                            </button>
-                        </div>
+                    <div className="col-12 col-md-6 offset-lg-2 col-lg-4">
+                        <RepoAdd
+                            onAdd={reponame => this.handleRepoAdd(reponame)}
+                            onError={error => this.handleRepoAddError(error)}
+                            loading={repoAddLoading}
+                            />
                     </div>
                 </div>
-                <hr />
-                <div className="p-3">
-                    <CommitList list={list} />
-                </div>
+                {listComponent}
             </div>
         );
     }
@@ -78,8 +77,25 @@ class AppPage extends Component {
 
 const mapStateToProps = state => {
     return {
-        isLogged: state.auth.hasSession
+        isLogged: state.auth.hasSession,
+
+        alertMessage: state.commit.alertMessage,
+        alertType: state.commit.alertType,
+        repoAddLoading: state.commit.repoAddLoading,
+
+        list: state.commit.commitList,
+        commitsLoading: state.commit.commitsLoading
     };
 };
 
-export default connect(mapStateToProps)(AppPage);
+const mapDispatchToProps = dispatch => {
+    return {
+        repoAddStart: reponame => dispatch(repoAddAction(reponame)),
+        fetchCommits: () => dispatch(fetchCommitsAction()),
+
+        setAlertError: error => dispatch(setAlertAction(error, 'ERROR')),
+        clearAlert: error => dispatch(clearAlertAction())
+    };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(AppPage);

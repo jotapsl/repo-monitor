@@ -1,8 +1,8 @@
 import axios from 'axios';
 import Cookies from 'js-cookie';
-import { axiosConfig } from '../utils';
+import { Urls } from '../utils';
 
-export const getSessionInfo = () => {
+export const getSessionInfoAction = () => {
     return (dispatch) => {
         const hasSession = Cookies.get('hassession');
         
@@ -24,7 +24,7 @@ export const loginAction = (code) => {
     return (dispatch) => {
         dispatch(loginStartAction());
 
-        axios.post(Urls.login(), {code}, axiosConfig).then(
+        axios.post(Urls.login(), {code}).then(
             (res) => {
                 dispatch(loginSuccessfulAction(res.data['username']));
             },
@@ -37,7 +37,7 @@ export const loginAction = (code) => {
 
 export const logoutAction = () => {
     return (dispatch) => {
-        axios.post(Urls.logout(), {}, axiosConfig).then(
+        axios.post(Urls.logout()).then(
             res => dispatch({type: 'LOGOUT'})
         );
     }

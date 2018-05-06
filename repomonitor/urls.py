@@ -5,7 +5,7 @@ from django.views.generic import TemplateView
 
 import django_js_reverse.views
 
-from repomonitorapp.views import LoginView, LogoutView
+from repomonitorapp.views import LoginView, LogoutView, CommitView, RepoView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -13,6 +13,9 @@ urlpatterns = [
 
     url(r'^api/login/$', LoginView.as_view(), name='login'),
     url(r'^api/logout/$', LogoutView.as_view(), name='logout'),
+
+    url(r'^api/repository/add$', RepoView.as_view(), name='add_repository'),
+    url(r'^api/commits/list$', CommitView.as_view(), name='list_commits'),
 
     url(r'^logincallback/$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='logincallback'),
     url(r'^landing/$', TemplateView.as_view(template_name='repomonitorapp/itworks.html'), name='landing'),

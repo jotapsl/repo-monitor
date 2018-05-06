@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { getSessionInfo } from "../../actions/authActions";
+import { getSessionInfoAction } from "../../actions/authActions";
 
 class Startup extends Component {
     componentDidMount() {
@@ -20,7 +20,7 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
     return {
-        getSessionInfo: () => dispatch(getSessionInfo())
+        getSessionInfo: () => dispatch(getSessionInfoAction())
     }
 }
 

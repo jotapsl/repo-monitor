@@ -1,5 +1,3 @@
-import { ENETUNREACH } from "constants";
-
 export default (
     state = {
         hasSession: false,

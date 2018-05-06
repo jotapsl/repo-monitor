@@ -1,20 +1,16 @@
 import React, { Component } from "react";
-import classNames from "classnames";
 
 class CommitListItem extends Component {
     render() {
-        const { item, isLast } = this.props;
-
-        const itemClass = classNames("commit-list-item border p-1", {
-            "border-bottom-0": isLast
-        });
+        const { item } = this.props;
 
         return (
-            <div className={itemClass}>
-                <div>{item.message}</div>
-                <div className="text-muted"><i className="fas fa-book" /> {item.repo}</div>
-                <div className="text-muted"><i className="fas fa-user" /> {item.author}</div>
-            </div>
+            <tr>
+                <td className="w-50" scope="row">{item.message}</td>
+                <td><i className="fas fa-book" /> {item.repo}</td>
+                <td><i className="fas fa-user" /> {item.author}</td>
+                <td><i className="far fa-clock" /> {item.date}</td>
+            </tr>
         );
     }
 }
