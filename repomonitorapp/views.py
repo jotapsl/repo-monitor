@@ -8,9 +8,7 @@ from .services import GithubService
 from .models import Repo, Commit
 
 import json
-import requests
 import re
-
 
 class LoginView(View):
     def get(self, request, *args, **kwargs):
@@ -22,15 +20,15 @@ class LoginView(View):
 
     def post(self, request, *args, **kwargs):
         # Get Access Token from OAuth
-        code = json.loads(request.body).get('code')
+        code = json.loads(request.body)['code']
         response_json = GithubService.get_token(code)
 
         # Check for errors
-        if 'error' in response_json:
+        if 'error' in response_json or response_json['scope'] != 'write:repo_hook':
             return HttpResponse(status=401)
 
         # Get logged user info
-        access_token = response_json.get('access_token')
+        access_token = response_json['access_token']
         user_response = GithubService.get_user_data(access_token)
 
         # Check for errors
@@ -38,8 +36,8 @@ class LoginView(View):
             return HttpResponse(status=401)
 
         user_response_json = user_response.json()
-        user_github_id = user_response_json.get('id')
-        username = user_response_json.get('login')
+        user_github_id = user_response_json['id']
+        username = user_response_json['login']
 
         # Create Django session
         user = authenticate(
@@ -102,7 +100,7 @@ class RepoView(View):
             return HttpResponse(status=401)
         token = request.session['access_token']
 
-        reponame = json.loads(request.body).get('reponame')
+        reponame = json.loads(request.body)['reponame']
 
         # Check if reponame parameter is valid
         if not re.match(r'^([a-zA-z0-9.-])+\/([a-zA-z0-9.-])+$', reponame):
@@ -124,12 +122,12 @@ class RepoView(View):
                 {'error': f'User does not own any public repo named "{reponame}".'}, status=400)
 
         commits = GithubService.get_commits_from_repo(
-            repo.get('full_name'), token)
+            repo['full_name'], token)
 
         # Save Repo
         repo_obj = Repo(
-            github_id=repo.get('id'),
-            full_name=repo.get('full_name'),
+            github_id=repo['id'],
+            full_name=repo['full_name'],
             user=request.user
         )
         repo_obj.save()
@@ -137,4 +135,35 @@ class RepoView(View):
         # Save Commits
         Commit.objects.save_commits(repo_obj, commits)
 
+        # Set Repo Webhook
+        GithubService.set_webhook_to_repo(repo['full_name'], token)
+
         return JsonResponse({'message': 'Repository successfully added.'})
+
+class WebhookListener(View):
+    # Listener to push events
+    def post(self, request, *args, **kwargs):
+        if request.META['HTTP_X_GITHUB_EVENT'] == 'ping':
+            return HttpResponse()
+
+        data = json.loads(request.body)
+
+        repo_id = data['repository']['id']
+
+        repo_obj = Repo.objects.filter(github_id=repo_id)[0]
+
+        # Extract commits
+        commits = []
+        for commit in data['commits']:
+            commit_json = {
+                'author': commit['author']['username'],
+                'timestamp': commit['timestamp'],
+                'message': commit['message']
+            }
+
+            commits.append(commit_json)
+
+        # Save Commits
+        Commit.objects.save_commits(repo_obj, commits)
+
+        return HttpResponse()

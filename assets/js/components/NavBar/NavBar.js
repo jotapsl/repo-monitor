@@ -27,7 +27,7 @@ class NavBar extends Component {
 
         logout();
     }
-        
+   
     render() {
         const { githubHref } = this.state;
         const { isLogged, username, loggingIn } = this.props;
@@ -54,7 +54,7 @@ class NavBar extends Component {
             <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
                 <div className="container">
                     <div className="navbar-brand">Repo Manager</div>
-
+                    
                     {menu}
                 </div>
             </nav>

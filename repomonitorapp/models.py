@@ -16,10 +16,10 @@ class CommitManager(models.Manager):
     def save_commits(self, repo, commits):
         for commit in commits:
             new_commit = Commit(
-                message=commit['commit']['message'],
-                author=commit['author']['login'],
-                repo=repo,
-                timestamp=commit['commit']['author']['date']
+                message=commit['message'],
+                author=commit['author'],
+                timestamp=commit['timestamp'],
+                repo=repo
             )
 
             new_commit.save()

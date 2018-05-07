@@ -69,10 +69,32 @@ class GithubService:
                 })
 
             for commit in response.json():
-                commits.append(commit)
+                commit_json = {
+                    'message': commit['commit']['message'],
+                    'author': commit['author']['login'],
+                    'timestamp': commit['commit']['author']['date']
+                }
+                commits.append(commit_json)
 
             lastPage = response.links.get('next') == None
             if not lastPage:
                 url = response.links['next']['url']
 
         return commits
+    
+    @staticmethod
+    def set_webhook_to_repo(reponame, token):
+        headers = {'Authorization': f'token {token}'}
+
+        r = requests.post(f'https://api.github.com/repos/{reponame}/hooks',
+            headers=headers,
+            json={
+                'name': 'web',
+                'active': True,
+                'config': {
+                    'url': 'https://repo-monitor.herokuapp.com/api/webhook/listener',
+                    'content_type': 'json'
+                }
+            }
+        )
+
