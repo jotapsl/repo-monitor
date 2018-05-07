@@ -77,7 +77,7 @@ class CommitView(View):
         if reponame:
             query = Commit.objects.filter(repo__full_name=reponame, repo__user=request.user).order_by('-timestamp')
         else:
-            query = Commit.objects.order_by('-timestamp')    
+            query = Commit.objects.filter(repo__user=request.user).order_by('-timestamp')    
         commits = query.values('id','message','author','repo__full_name','timestamp')
 
         # Paginate
