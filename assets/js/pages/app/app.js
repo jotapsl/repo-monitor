@@ -103,7 +103,7 @@ class AppPage extends Component {
                 </div>
                 <div className="mt-3">
                     <CommitList list={commitList} onRepoSelect={(reponame) => this.handleRepoSelect(reponame)}/>
-                    <Paginator config={pageConfig} onAction={(newPage) => this.handlePaginatorAction(newPage)}/>
+                    <Paginator show={!commitsLoading} config={pageConfig} onAction={(newPage) => this.handlePaginatorAction(newPage)}/>
                 </div>
                 {loadingIcon}
             </div>

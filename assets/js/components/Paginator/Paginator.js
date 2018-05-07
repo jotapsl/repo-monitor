@@ -12,7 +12,10 @@ class Paginator extends Component {
     }
 
     render() {
+        const { show } = this.props;
         const { hasNext, hasPrev, page } = this.props.config
+
+        if (!show) return null;
 
         const prevButton = hasPrev ? <button type="button" className="btn btn-primary" onClick={() => this.click('prev')}>Prev</button> : null;
         const nextButton = hasNext ? <button type="button" className="btn btn-primary" onClick={() => this.click('next')}>Next</button> : null;
