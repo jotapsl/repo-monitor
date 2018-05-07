@@ -4,6 +4,7 @@ import RepoAdd from './RepoAdd';
 import NavBar from './NavBar';
 import Startup from './Startup';
 import Alert from './Alert';
+import Paginator from './Paginator';
 
 export {
     CommitList,
@@ -11,5 +12,6 @@ export {
     RepoAdd,
     NavBar,
     Startup,
-    Alert
+    Alert,
+    Paginator
 };

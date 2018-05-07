@@ -16,7 +16,7 @@ class CommitListItem extends Component {
                 <td className="w-50" scope="row">{item.message}</td>
                 <td>
                     <i className="fas fa-book" />
-                    <a href="" className="text-secondary" onClick={(e) => this.repoSelect(e)}> {item.repo}</a>
+                    <a href="" className="text-secondary" onClick={(e) => this.repoSelect(e)} title={`Filter by ${item.repo}`}> {item.repo}</a>
                 </td>
                 <td><i className="fas fa-user" /> {item.author}</td>
                 <td><i className="far fa-clock" /> {item.date}</td>

@@ -29,16 +29,23 @@ class GithubService:
         headers = {'Authorization': f'token {access_token}',
                    'Accept': 'application/vnd.github.v3+json'}
 
-        # TODO check all pages
-        response = requests.get(
-            'https://api.github.com/user/repos', headers=headers, params={
-                'visibility': 'public',
-                'affiliation': 'owner'
-            })
+        url = 'https://api.github.com/user/repos'
+        lastPage = False
 
-        for repo in response.json():
-            if repo.get('full_name') == reponame:
-                return repo
+        while not lastPage:
+            response = requests.get(
+                url, headers=headers, params={
+                    'visibility': 'public',
+                    'affiliation': 'owner'
+                })
+
+            for repo in response.json():
+                if repo.get('full_name') == reponame:
+                    return repo
+
+            lastPage = response.links.get('next') == None
+            if not lastPage:
+                url = response.links['next']['url']
 
         return None
 

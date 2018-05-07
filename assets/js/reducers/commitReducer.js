@@ -7,7 +7,12 @@ export default (
         commitsLoading: false,
         commitList: [],
 
-        repoFilter: null
+        repoFilter: null,
+        pageConfig: {
+            page: 1,
+            hasNext: true,
+            hasPrev: true
+        }
     },
     action
 ) => {
@@ -31,6 +36,9 @@ export default (
             return Object.assign({}, state, {repoFilter: action.payload.reponame});
         case "CLEAR_REPO_FILTER":
             return Object.assign({}, state, {repoFilter: null});
+
+        case "SET_PAGE_CONFIG":
+            return Object.assign({}, state, {pageConfig: Object.assign({}, action.payload.pageConfig)});
     }
 
     return state;

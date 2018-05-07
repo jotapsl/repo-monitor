@@ -10,7 +10,8 @@ export const repoAddAction = (reponame) => {
             (res) => {
                 dispatch(repoAddFinish());
                 dispatch(setAlertAction(res.data['message'], 'SUCCESS'));
-                dispatch(fetchCommitsAction())
+                dispatch(fetchCommitsAction(1));
+                dispatch(clearRepoFilter());
             },
             (err) => {
                 dispatch(repoAddFinish());
@@ -20,42 +21,51 @@ export const repoAddAction = (reponame) => {
     }
 }
 
-export const fetchCommitsAction = (reponame) => {
+export const fetchCommitsAction = (page, reponame) => {
     return dispatch => {
         dispatch(fetchCommitsStart());
-        let params = {};
-        
+        let params = { page: page };
+
         if (reponame)
-            params = {reponame};
+            params.reponame = reponame;
 
         axios.get(Urls.list_commits(), {params}).then(
             (res) => {
-                const list = res.data.map(item => {
+                const list = res.data.list.map(item => {
                     return {
                         id: item.id,
                         author: item.author,
                         message: item.message,
                         repo: item.repo__full_name,
                         date: (new Date(item.timestamp)).toDateString()
-                    }
-                })
+                    };
+                });
                 dispatch(fetchCommitsFinish(list));
+                
+                const { hasNext, hasPrev, page } = res.data;
+                const pageConfig = {hasNext, hasPrev, page};
+                dispatch(setPageConfig(pageConfig));
             }
         );
     }
 }
 
-export const setRepoFilterAction = (reponame) => {
-    return dispatch => {
-        dispatch(setRepoFilter(reponame));
-        dispatch(fetchCommitsAction(reponame));
+const setPageConfig = (pageConfig) => {
+    return {
+        type: 'SET_PAGE_CONFIG',
+        payload: { pageConfig }
     };
 }
 
-export const clearRepoFilterAction = (reponame) => {
+export const setRepoFilterAction = (reponame) => {
+    return dispatch => {
+        dispatch(setRepoFilter(reponame));
+    };
+}
+
+export const clearRepoFilterAction = () => {
     return dispatch => {
         dispatch(clearRepoFilter());
-        dispatch(fetchCommitsAction(null));
     };
 }
 

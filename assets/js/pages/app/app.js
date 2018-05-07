@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { RepoAdd, CommitList, Alert } from "../../components";
+import { RepoAdd, CommitList, Alert, Paginator } from "../../components";
 
 import {
     setAlertAction,
@@ -15,8 +15,8 @@ import {
 class AppPage extends Component {
 
     componentDidMount() {
-        const { fetchCommits } = this.props;
-        fetchCommits();
+        const { fetchCommits, repoFilter } = this.props;
+        fetchCommits(1, repoFilter);
     }
 
     handleRepoAdd(reponame) {
@@ -35,17 +35,33 @@ class AppPage extends Component {
     }
 
     handleRepoSelect(reponame) {
-        const { setRepoFilter } = this.props;
+        const { setRepoFilter, fetchCommits } = this.props;
         setRepoFilter(reponame);
+        fetchCommits(1, reponame);
     }
 
     handleRepoClear() {
-        const { clearRepoFilter } = this.props;
+        const { clearRepoFilter, fetchCommits } = this.props;
         clearRepoFilter();
+        fetchCommits(1);
+    }
+
+    handlePaginatorAction(page) {
+        const { repoFilter, fetchCommits } = this.props;
+        fetchCommits(page, repoFilter);
     }
 
     render() {
-        const { isLogged, repoAddLoading, alertMessage, alertType, list, commitsLoading, repoFilter } = this.props;
+        const {
+            isLogged,
+            repoAddLoading,
+            alertMessage,
+            alertType,
+            commitList,
+            commitsLoading,
+            repoFilter,
+            pageConfig
+        } = this.props;
 
         if (!isLogged) return <Redirect to="/landing/" />;
 
@@ -60,7 +76,8 @@ class AppPage extends Component {
                 <div className="btn btn-dark ml-2 py-0 px-1 cursor-pointer" title="Clear filter" onClick={() => this.handleRepoClear()}>
                     <i className="fas fa-fw fa-sm fa-times"></i>
                 </div>
-            </h4>) : (<h4>All repositories</h4>)
+            </h4>
+        ) : (<h4>All repositories</h4>)
 
         return (
             <div>
@@ -85,7 +102,8 @@ class AppPage extends Component {
                     </div>
                 </div>
                 <div className="mt-3">
-                    <CommitList list={list} onRepoSelect={(reponame) => this.handleRepoSelect(reponame)}/>
+                    <CommitList list={commitList} onRepoSelect={(reponame) => this.handleRepoSelect(reponame)}/>
+                    <Paginator config={pageConfig} onAction={(newPage) => this.handlePaginatorAction(newPage)}/>
                 </div>
                 {loadingIcon}
             </div>
@@ -101,17 +119,18 @@ const mapStateToProps = state => {
         alertType: state.commit.alertType,
         repoAddLoading: state.commit.repoAddLoading,
 
-        list: state.commit.commitList,
+        commitList: state.commit.commitList,
         commitsLoading: state.commit.commitsLoading,
 
-        repoFilter: state.commit.repoFilter
+        repoFilter: state.commit.repoFilter,
+        pageConfig: state.commit.pageConfig
     };
 };
 
 const mapDispatchToProps = dispatch => {
     return {
-        repoAddStart: reponame => dispatch(repoAddAction(reponame)),
-        fetchCommits: () => dispatch(fetchCommitsAction()),
+        repoAddStart: (reponame, page, repoFilter) => dispatch(repoAddAction(reponame, page, repoFilter)),
+        fetchCommits: (page, repoFilter) => dispatch(fetchCommitsAction(page, repoFilter)),
 
         setAlertError: error => dispatch(setAlertAction(error, 'ERROR')),
         clearAlert: error => dispatch(clearAlertAction()),

@@ -3,6 +3,7 @@ from django.http import HttpResponse, JsonResponse
 from django.conf import settings
 from django.contrib.auth import authenticate, login, logout
 from django.views import View
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from .services import GithubService
 from .models import Repo, Commit
 
@@ -70,21 +71,28 @@ class CommitView(View):
             return HttpResponse(status=401)
 
         reponame = request.GET.get('reponame')
+        page = request.GET.get('page')
 
+        # Filter by reponame
         if reponame:
             query = Commit.objects.filter(repo__full_name=reponame).order_by('-timestamp')
         else:
             query = Commit.objects.order_by('-timestamp')    
+        commits = query.values('id','message','author','repo__full_name','timestamp')
 
-        commits = query.values(
-            'id',
-            'message',
-            'author',
-            'repo__full_name',
-            'timestamp'
-        )
+        # Paginate
+        paginator = Paginator(commits, 10)
+        try:
+            commits_page = paginator.page(page)
+        except EmptyPage:
+            commits_page = paginator.page(1)
 
-        return JsonResponse(list(commits), safe=False)
+        return JsonResponse({
+            'list': list(commits_page.object_list),
+            'page': commits_page.number,
+            'hasNext': commits_page.has_next(),
+            'hasPrev': commits_page.has_previous()
+        }, safe=False)
 
 
 class RepoView(View):
