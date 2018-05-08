@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Redirect } from "react-router-dom";
-import { RepoAdd, CommitList, Alert, Paginator } from "../../components";
+import { RepoAdd, CommitList, Alert, Paginator } from "../components";
 
 import {
     setAlertAction,
@@ -9,46 +9,38 @@ import {
     repoAddAction,
     fetchCommitsAction,
     setRepoFilterAction,
-    clearRepoFilterAction
-} from "../../actions/commitActions";
+    clearRepoFilterAction,
+    setPageAction
+} from "../actions/commitActions";
 
 class AppPage extends Component {
 
     componentDidMount() {
-        const { fetchCommits, repoFilter } = this.props;
-        fetchCommits(1, repoFilter);
+        this.props.fetchCommits();
     }
 
     handleRepoAdd(reponame) {
-        const { repoAddStart } = this.props;
-        repoAddStart(reponame);
+        this.props.repoAdd(reponame);
     }
 
     handleRepoAddError(error) {
-        const { setAlertError } = this.props;
-        setAlertError(error);
+        this.props.setAlertError(error);
     }
 
     handleAlertDismiss() {
-        const { clearAlert } = this.props;
-        clearAlert();
+        this.props.clearAlert();
     }
 
     handleRepoSelect(reponame) {
-        const { setRepoFilter, fetchCommits } = this.props;
-        setRepoFilter(reponame);
-        fetchCommits(1, reponame);
+        this.props.setRepoFilter(reponame);
     }
 
     handleRepoClear() {
-        const { clearRepoFilter, fetchCommits } = this.props;
-        clearRepoFilter();
-        fetchCommits(1);
+        this.props.clearRepoFilter();
     }
 
     handlePaginatorAction(page) {
-        const { repoFilter, fetchCommits } = this.props;
-        fetchCommits(page, repoFilter);
+        this.props.setPage(page);
     }
 
     render() {
@@ -129,14 +121,16 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        repoAddStart: (reponame, page, repoFilter) => dispatch(repoAddAction(reponame, page, repoFilter)),
-        fetchCommits: (page, repoFilter) => dispatch(fetchCommitsAction(page, repoFilter)),
+        repoAdd: (reponame) => dispatch(repoAddAction(reponame)),
+        fetchCommits: () => dispatch(fetchCommitsAction()),
 
         setAlertError: error => dispatch(setAlertAction(error, 'ERROR')),
-        clearAlert: error => dispatch(clearAlertAction()),
+        clearAlert: () => dispatch(clearAlertAction()),
 
         setRepoFilter: reponame => dispatch(setRepoFilterAction(reponame)),
-        clearRepoFilter: reponame => dispatch(clearRepoFilterAction(reponame))
+        clearRepoFilter: () => dispatch(clearRepoFilterAction()),
+
+        setPage: page => dispatch(setPageAction(page))
     };
 };
 

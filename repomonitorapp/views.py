@@ -98,8 +98,8 @@ class RepoView(View):
     def post(self, request, *args, **kwargs):
         if not request.user.is_authenticated:
             return HttpResponse(status=401)
-        token = request.session['access_token']
 
+        token = request.session['access_token']
         reponame = json.loads(request.body)['reponame']
 
         # Check if reponame parameter is valid
@@ -113,18 +113,19 @@ class RepoView(View):
             return JsonResponse(
                 {'error': f'Repo named "{reponame}" already added into database.'}, status=400)
 
+        # Check if user is owner of repo
         repo = GithubService.get_repo_if_owner(
             reponame, token)
 
-        # Check if user is owner of repo
         if not repo:
             return JsonResponse(
                 {'error': f'User does not own any public repo named "{reponame}".'}, status=400)
 
+        # Get commits
         commits = GithubService.get_commits_from_repo(
             repo['full_name'], token)
 
-        # Save Repo
+        # Save repository
         repo_obj = Repo(
             github_id=repo['id'],
             full_name=repo['full_name'],
@@ -132,10 +133,10 @@ class RepoView(View):
         )
         repo_obj.save()
 
-        # Save Commits
+        # Save commits
         Commit.objects.save_commits(repo_obj, commits)
 
-        # Set Repo Webhook
+        # Set repo webhook
         GithubService.set_webhook_to_repo(repo['full_name'], token)
 
         return JsonResponse({'message': 'Repository successfully added.'})
@@ -143,13 +144,13 @@ class RepoView(View):
 class WebhookListener(View):
     # Listener to push events
     def post(self, request, *args, **kwargs):
+        # Dont add commits if event is ping
         if request.META['HTTP_X_GITHUB_EVENT'] == 'ping':
             return HttpResponse()
 
         data = json.loads(request.body)
 
         repo_id = data['repository']['id']
-
         repo_obj = Repo.objects.filter(github_id=repo_id)[0]
 
         # Extract commits
@@ -163,7 +164,7 @@ class WebhookListener(View):
 
             commits.append(commit_json)
 
-        # Save Commits
+        # Save commits
         Commit.objects.save_commits(repo_obj, commits)
 
         return HttpResponse()

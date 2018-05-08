@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { loginAction } from '../../actions/authActions';
+import { loginAction } from '../actions/authActions';
 import { Redirect } from 'react-router-dom';
 
 class LoginCallbackPage extends Component {
@@ -9,8 +9,6 @@ class LoginCallbackPage extends Component {
 
         if (isLogged)
             return;
-
-        // TODO helper function getUrlParam
 
         const code =
             location.search.match(/\?code=(.*)/) &&

@@ -20,10 +20,10 @@ urlpatterns = [
 
     url(r'^api/webhook/listener$', csrf_exempt(WebhookListener.as_view()), name='webhook_listener'),
 
-    url(r'^logincallback/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
-    url(r'^landing/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
-    url(r'^app/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
-    url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/itworks.html'))),
+    url(r'^logincallback/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/app.html'))),
+    url(r'^landing/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/app.html'))),
+    url(r'^app/$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/app.html'))),
+    url(r'^$', ensure_csrf_cookie(TemplateView.as_view(template_name='repomonitorapp/app.html'))),
 ]
 
 if settings.DEBUG:

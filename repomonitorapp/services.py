@@ -32,6 +32,7 @@ class GithubService:
         url = 'https://api.github.com/user/repos'
         lastPage = False
 
+        # Check all pages
         while not lastPage:
             response = requests.get(
                 url, headers=headers, params={
@@ -86,7 +87,7 @@ class GithubService:
     def set_webhook_to_repo(reponame, token):
         headers = {'Authorization': f'token {token}'}
 
-        r = requests.post(f'https://api.github.com/repos/{reponame}/hooks',
+        requests.post(f'https://api.github.com/repos/{reponame}/hooks',
             headers=headers,
             json={
                 'name': 'web',

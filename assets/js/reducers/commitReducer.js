@@ -37,6 +37,8 @@ export default (
         case "CLEAR_REPO_FILTER":
             return Object.assign({}, state, {repoFilter: null});
 
+        case "SET_PAGE":
+            return Object.assign({}, state, {pageConfig: Object.assign({}, state.pageConfig, {page: action.payload.page})});
         case "SET_PAGE_CONFIG":
             return Object.assign({}, state, {pageConfig: Object.assign({}, action.payload.pageConfig)});
     }
